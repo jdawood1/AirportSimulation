@@ -1,0 +1,40 @@
+# Compiled class files
+*.class
+
+# Gradle build directories
+/build/
+/.gradle/
+
+# IntelliJ IDEA project files
+/.idea/
+*.iml
+*.ipr
+*.iws
+
+# Eclipse project files
+/.project
+/.classpath
+/.settings/
+
+# VS Code project files
+/.vscode/
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# Logs and temporary files
+/logs/
+*.log
+
+# Checkstyle and SpotBugs reports
+/build/reports/
+
+# JUnit test reports
+/test-results/
+
+# Generated files
+/out/
+
+# Local environment settings
+.env

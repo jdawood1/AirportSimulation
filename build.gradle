@@ -1,0 +1,59 @@
+import com.github.spotbugs.snom.SpotBugsTask
+
+plugins {
+    id 'java'
+    id 'checkstyle'
+    id 'com.github.spotbugs' version '5.0.14'
+}
+
+group 'AirportSimulation'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+checkstyle {
+    toolVersion = '10.3'
+}
+
+apply plugin: 'checkstyle'
+checkstyle {
+    ignoreFailures = true
+    showViolations = false
+    toolVersion = "8.8"
+}
+
+tasks.withType(Checkstyle).configureEach {
+    reports {
+        html.required.set(true)
+        xml.required.set(false)
+    }
+}
+
+spotbugs {
+    toolVersion = '4.7.3'
+    ignoreFailures = true
+    showProgress = true
+    effort = 'max'
+}
+
+tasks.withType(SpotBugsTask).configureEach {
+    reports {
+        html.required.set(true)
+        xml.required.set(false)
+    }
+}
+
+tasks.register('run', JavaExec) {
+    mainClass = 'Main'
+    classpath = sourceSets.main.runtimeClasspath
+}
