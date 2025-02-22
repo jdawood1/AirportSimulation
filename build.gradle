@@ -2,34 +2,62 @@ import com.github.spotbugs.snom.SpotBugsTask
 
 plugins {
     id 'java'
+    id 'jacoco'
     id 'checkstyle'
+    id 'application'
     id 'com.github.spotbugs' version '5.0.14'
 }
 
-group 'AirportSimulation'
-version '1.0-SNAPSHOT'
+application {
+    mainClass = 'Main'
+}
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
+    implementation 'org.jetbrains:annotations:24.0.1'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.9.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
+
+    // Mockito dependencies for mocking
+    testImplementation 'org.mockito:mockito-core:4.11.0'
+    testImplementation 'org.mockito:mockito-junit-jupiter:4.11.0'
 }
 
 test {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
+
+    // Enable printing of standard output and error in the terminal
+    testLogging {
+        events "passed", "skipped", "failed"
+        showStandardStreams = true  // Ensure print statements are visible in the terminal
+    }
 }
 
-checkstyle {
-    toolVersion = '10.3'
+jacoco {
+    toolVersion = "0.8.12"
+    reportsDirectory = layout.buildDirectory.dir('customJacocoReportDir')
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = false  // Disable XML report
+        csv.required = false  // Disable CSV report
+        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+    }
 }
 
 apply plugin: 'checkstyle'
 checkstyle {
     ignoreFailures = true
     showViolations = false
-    toolVersion = "8.8"
+    toolVersion = '8.8'
 }
 
 tasks.withType(Checkstyle).configureEach {
@@ -47,13 +75,11 @@ spotbugs {
 }
 
 tasks.withType(SpotBugsTask).configureEach {
-    reports {
-        html.required.set(true)
-        xml.required.set(false)
+    reports.create("html") {
+        required.set(true)
+    }
+    reports.create("xml") {
+        required.set(false)
     }
 }
 
-tasks.register('run', JavaExec) {
-    mainClass = 'Main'
-    classpath = sourceSets.main.runtimeClasspath
-}
